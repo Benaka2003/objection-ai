@@ -2,7 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const classify = require("../utils/classify");
-const generateResponses = require("../utils/generateResponses");
+
+const {
+  saveAnalysis,
+} = require("../services/firebaseService");
+
+const {
+  generateAIResponses,
+} = require("../services/groqService");
 
 router.post("/", async (req, res) => {
   try {
@@ -10,30 +17,37 @@ router.post("/", async (req, res) => {
 
     if (!input || input.trim().length < 5) {
       return res.status(400).json({
-        error: "Please describe the objection in more detail"
+        error: "Please describe the objection in more detail",
       });
     }
 
     const classification = classify(input);
 
-    const responses = await generateResponses(
+    const responses = await generateAIResponses(
       input,
       classification.category,
       classification.emotionalRoot
     );
 
-    res.json({
-      objectionId: Date.now().toString(),
+    const analysisId = await saveAnalysis({
+      input,
       category: classification.category,
       emotionalRoot: classification.emotionalRoot,
-      responses
+      responses,
+    });
+
+    res.json({
+      objectionId: analysisId,
+      category: classification.category,
+      emotionalRoot: classification.emotionalRoot,
+      responses,
     });
 
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      error: "Failed to generate responses"
+      error: "Failed to generate responses",
     });
   }
 });

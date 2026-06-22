@@ -1,16 +1,41 @@
-# React + Vite
+# ObjectionAI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI-powered objection handling frontend, built with React + Vite.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+The app expects a backend running at `http://localhost:3001` exposing:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `GET /health`
+- `GET /analytics`
+- `GET /history`
+- `POST /analyse` — body `{ "input": "..." }`
 
-## Expanding the ESLint configuration
+Change the base URL in `src/utils/constants.js` (`API_BASE`) if your backend runs elsewhere.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Structure
+
+```
+src/
+├── api/            API client (fetch wrapper around the ObjectionAI backend)
+├── components/     Reusable UI: cards, panels, icons, toasts, skeletons
+├── layout/         App shell: navbar, sidebar, page container
+├── pages/          Top-level routed views
+├── hooks/          Data-fetching and stateful logic (health, analysis, analytics)
+├── utils/          Constants and formatting helpers
+├── App.jsx         Root component — state-based page switching
+├── main.jsx        React entry point
+└── index.css       Global styles + liquid-glass design system
+```
+
+## Notes
+
+- No mock data anywhere — every page calls the real backend and shows real
+  loading/error states if it's unreachable.
+- Page switching is local React state (no router), matching the original brief.
+- Animations use `framer-motion`. Charts use `recharts`.

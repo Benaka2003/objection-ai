@@ -1,4 +1,6 @@
-export const API_BASE = "http://localhost:3001";
+export const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  "https://objection-ai-production.up.railway.app";
 
 export const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard" },
@@ -6,7 +8,6 @@ export const NAV_ITEMS = [
   { key: "history", label: "History" },
   { key: "settings", label: "Settings" },
 ];
-
 export const STYLE_THEME = {
   empathetic: {
     color: "#A78BFA",

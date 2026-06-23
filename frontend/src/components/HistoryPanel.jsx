@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { CATEGORY_COLORS, STYLE_THEME } from "../utils/constants.js";
+import { timeAgo } from "../utils/formatters.js";
 
 function HistoryDetail({ item, onClose }) {
   if (!item) return null;
@@ -33,7 +34,7 @@ function HistoryDetail({ item, onClose }) {
           style={{
             borderRadius: 24,
             padding: 28,
-            maxWidth: 640,
+            maxWidth: 700,
             width: "100%",
             maxHeight: "82vh",
             overflowY: "auto",
@@ -74,8 +75,8 @@ function HistoryDetail({ item, onClose }) {
             <button
               onClick={onClose}
               style={{
-                width: 30,
-                height: 30,
+                width: 32,
+                height: 32,
                 display: "grid",
                 placeItems: "center",
                 background: "rgba(255,255,255,0.04)",
@@ -83,7 +84,6 @@ function HistoryDetail({ item, onClose }) {
                 borderRadius: 8,
                 color: "var(--text-secondary)",
                 cursor: "pointer",
-                flexShrink: 0,
               }}
             >
               ✕
@@ -91,7 +91,7 @@ function HistoryDetail({ item, onClose }) {
           </div>
 
           {item.emotionalRoot && (
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 18 }}>
               <span
                 className="mono"
                 style={{
@@ -131,8 +131,8 @@ function HistoryDetail({ item, onClose }) {
                   <div
                     key={i}
                     style={{
-                      padding: 14,
-                      borderRadius: 12,
+                      padding: 16,
+                      borderRadius: 14,
                       background: theme.bg,
                       border: `1px solid ${theme.color}33`,
                     }}
@@ -149,10 +149,10 @@ function HistoryDetail({ item, onClose }) {
 
                     <p
                       style={{
-                        fontSize: 13,
+                        fontSize: 13.5,
                         color: "var(--text)",
-                        marginTop: 6,
-                        lineHeight: 1.55,
+                        marginTop: 8,
+                        lineHeight: 1.6,
                       }}
                     >
                       {r.response}
@@ -222,7 +222,7 @@ export function HistoryPanel({ items }) {
                 textAlign: "left",
                 cursor: "pointer",
                 borderRadius: 16,
-                padding: "15px 17px",
+                padding: "16px 18px",
                 display: "flex",
                 alignItems: "center",
                 gap: 14,
@@ -238,11 +238,16 @@ export function HistoryPanel({ items }) {
                 }}
               />
 
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
                 <p
                   style={{
-                    fontSize: 13.5,
-                    fontWeight: 500,
+                    fontSize: 14,
+                    fontWeight: 600,
                     color: "var(--text)",
                     margin: 0,
                     whiteSpace: "nowrap",
@@ -255,23 +260,50 @@ export function HistoryPanel({ items }) {
                     "Untitled objection"}
                 </p>
 
-                <span
-                  className="mono"
+                <div
                   style={{
-                    fontSize: 11,
-                    color: "var(--text-faint)",
-                    textTransform: "capitalize",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 5,
                   }}
                 >
-                  {item.category || "uncategorized"}
-                </span>
+                  <span
+                    className="mono"
+                    style={{
+                      fontSize: 11,
+                      color: "var(--text-faint)",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {item.category || "uncategorized"}
+                  </span>
+
+                  <span
+                    style={{
+                      color: "var(--text-faint)",
+                      fontSize: 10,
+                    }}
+                  >
+                    •
+                  </span>
+
+                  <span
+                    style={{
+                      color: "var(--text-faint)",
+                      fontSize: 10,
+                    }}
+                  >
+                    {timeAgo(item.createdAt || item.timestamp)}
+                  </span>
+                </div>
               </div>
 
               <span
                 style={{
-                  color: "var(--text-faint)",
+                  color: "var(--text-secondary)",
                   fontSize: 11,
-                  maxWidth: 220,
+                  maxWidth: 240,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",

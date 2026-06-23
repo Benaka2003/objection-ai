@@ -4,29 +4,13 @@
  */
 export function timeAgo(ts) {
   if (!ts) return "";
-
-  let date;
-
-  if (ts._seconds) {
-    date = new Date(ts._seconds * 1000);
-  } else if (ts.seconds) {
-    date = new Date(ts.seconds * 1000);
-  } else {
-    date = new Date(ts);
-  }
-
-  if (isNaN(date.getTime())) return "";
-
+  const date = new Date(ts);
+  if (isNaN(date.getTime())) return String(ts);
   const diff = (Date.now() - date.getTime()) / 1000;
-
   if (diff < 60) return "just now";
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-
-  return date.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  });
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 /**

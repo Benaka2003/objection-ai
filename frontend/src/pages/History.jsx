@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../api/api.js";
-import { useToast } from "../components/ToastProvider.jsx";
+import { ErrorBanner } from "../components/ErrorBanner.jsx";
 import { HistoryPanel } from "../components/HistoryPanel.jsx";
 import { SkeletonBlock } from "../components/LoadingSkeleton.jsx";
-import { ErrorBanner } from "../components/ErrorBanner.jsx";
+import { useToast } from "../components/ToastProvider.jsx";
 
 export function History() {
   const toast = useToast();
@@ -14,9 +14,26 @@ export function History() {
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     try {
       const d = await api.history();
-      const list = Array.isArray(d) ? d : d.items || d.history || [];
+
+      const list = Array.isArray(d)
+        ? d
+        : d.items || d.history || [];
+
+      list.sort((a, b) => {
+        const ta =
+          a.createdAt?._seconds ||
+          new Date(a.createdAt || a.timestamp || 0).getTime();
+
+        const tb =
+          b.createdAt?._seconds ||
+          new Date(b.createdAt || b.timestamp || 0).getTime();
+
+        return tb - ta;
+      });
+
       setItems(list);
     } catch (e) {
       setError(e);
@@ -31,28 +48,82 @@ export function History() {
   }, [load]);
 
   return (
-    <div style={{ maxWidth: 800, margin: "0 auto", padding: "8px 4px 60px" }}>
-      <div style={{ marginBottom: 22, marginTop: 12 }}>
-        <span className="mono" style={{ fontSize: 11.5, color: "var(--accent-blue)", letterSpacing: 1, textTransform: "uppercase" }}>
+    <div
+      style={{
+        maxWidth: 800,
+        margin: "0 auto",
+        padding: "8px 4px 60px",
+      }}
+    >
+      <div
+        style={{
+          marginBottom: 22,
+          marginTop: 12,
+        }}
+      >
+        <span
+          className="mono"
+          style={{
+            fontSize: 11.5,
+            color: "var(--accent-blue)",
+            letterSpacing: 1,
+            textTransform: "uppercase",
+          }}
+        >
           History
         </span>
-        <h1 className="display" style={{ fontSize: 28, fontWeight: 700, margin: "8px 0 4px", letterSpacing: -0.6 }}>
+
+        <h1
+          className="display"
+          style={{
+            fontSize: 28,
+            fontWeight: 700,
+            margin: "8px 0 4px",
+            letterSpacing: -0.6,
+          }}
+        >
           Recent objections
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>Click any entry to see the full analysis.</p>
+
+        <p
+          style={{
+            color: "var(--text-secondary)",
+            fontSize: 14,
+          }}
+        >
+          Click any entry to see the full analysis.
+        </p>
       </div>
 
       {loading && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
           {[0, 1, 2, 3, 4].map((i) => (
-            <SkeletonBlock key={i} height={64} radius={16} />
+            <SkeletonBlock
+              key={i}
+              height={64}
+              radius={16}
+            />
           ))}
         </div>
       )}
 
-      {error && !loading && <ErrorBanner title="Couldn't load history" message={error.message} onRetry={load} />}
+      {error && !loading && (
+        <ErrorBanner
+          title="Couldn't load history"
+          message={error.message}
+          onRetry={load}
+        />
+      )}
 
-      {items && !loading && <HistoryPanel items={items} />}
+      {items && !loading && (
+        <HistoryPanel items={items} />
+      )}
     </div>
   );
 }

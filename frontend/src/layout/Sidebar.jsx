@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { IconBar, IconClock, IconGrid, IconSettings, IconShield } from "../components/Icons.jsx";
-import { NAV_ITEMS } from "../utils/constants.js";
+import { API_BASE, NAV_ITEMS } from "../utils/constants.js";
 
 const ICONS = {
   dashboard: IconGrid,

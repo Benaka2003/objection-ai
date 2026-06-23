@@ -10,7 +10,7 @@ async function apiRequest(path, options = {}) {
     });
   } catch (networkErr) {
     const err = new Error(
-      `Can't reach ${url}. Check that the ObjectionAI backend is running on localhost:3001 in this browser.`
+      `Can't reach ${url}. Check that the ObjectionAI backend is running .`
     );
     err.kind = "network";
     throw err;

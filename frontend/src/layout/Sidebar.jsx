@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
+import { IconBar, IconClock, IconGrid, IconSettings, IconShield } from "../components/Icons.jsx";
 import { NAV_ITEMS } from "../utils/constants.js";
-import { IconGrid, IconBar, IconClock, IconSettings, IconShield } from "../components/Icons.jsx";
 
 const ICONS = {
   dashboard: IconGrid,
@@ -84,7 +84,9 @@ export function Sidebar({ page, setPage, collapsed }) {
             <span className="mono" style={{ fontSize: 10.5, color: "var(--accent-purple)", letterSpacing: 0.4 }}>
               BACKEND
             </span>
-            <span style={{ fontSize: 11.5, color: "var(--text-faint)" }}>localhost:3001</span>
+           <span style={{ fontSize: 11.5, color: "var(--text-faint)" }}>
+  {import.meta.env.VITE_API_URL}
+</span>
           </>
         ) : (
           <IconShield width={16} height={16} color="var(--accent-purple)" />

@@ -1,11 +1,11 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useToast } from "../components/ToastProvider.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { useHealth } from "../hooks/useHealth.js";
 import { Navbar } from "./Navbar.jsx";
 import { Sidebar } from "./Sidebar.jsx";
-import { useHealth } from "../hooks/useHealth.js";
-import { useAuth } from "../context/AuthContext.jsx";
-import { useToast } from "../components/ToastProvider.jsx";
 
 export function DashboardLayout({ page, setPage, children }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -31,6 +31,8 @@ export function DashboardLayout({ page, setPage, children }) {
         onToggleSidebar={() => setCollapsed((c) => !c)}
         user={user}
         onLogout={handleLogout}
+        onNavigate={setPage}
+        unreadCount={2}
       />
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
         <Sidebar page={page} setPage={setPage} collapsed={collapsed} />

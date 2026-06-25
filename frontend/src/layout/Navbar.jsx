@@ -1,5 +1,5 @@
+import { IconBell, IconBolt } from "../components/Icons.jsx";
 import { StatusIndicator } from "../components/StatusIndicator.jsx";
-import { IconBolt, IconBell, IconUser } from "../components/Icons.jsx";
 
 function IconLogout(props) {
   return (
@@ -11,7 +11,7 @@ function IconLogout(props) {
   );
 }
 
-export function Navbar({ health, onToggleSidebar, user, onLogout }) {
+export function Navbar({ health, onToggleSidebar, user, onLogout, onNavigate, unreadCount = 0 }) {
   const initials = user?.email ? user.email[0].toUpperCase() : "?";
 
   return (
@@ -89,7 +89,10 @@ export function Navbar({ health, onToggleSidebar, user, onLogout }) {
           <StatusIndicator status={health.status} onClick={health.recheck} />
 
           <button
+            onClick={() => onNavigate("notifications")}
+            title="Notifications"
             style={{
+              position: "relative",
               width: 36,
               height: 36,
               display: "grid",
@@ -102,10 +105,19 @@ export function Navbar({ health, onToggleSidebar, user, onLogout }) {
             }}
           >
             <IconBell />
+            {unreadCount > 0 && (
+              <span style={{
+                position: "absolute", top: 6, right: 6,
+                width: 8, height: 8, borderRadius: "50%",
+                background: "var(--accent-purple)",
+                boxShadow: "0 0 6px rgba(139,92,246,0.8)",
+              }} />
+            )}
           </button>
 
           {/* User avatar with email tooltip */}
           <div
+            onClick={() => onNavigate("profile")}
             title={user?.email || ""}
             style={{
               width: 36,
@@ -120,7 +132,7 @@ export function Navbar({ health, onToggleSidebar, user, onLogout }) {
               fontSize: 13,
               fontWeight: 700,
               fontFamily: "var(--font-display)",
-              cursor: "default",
+              cursor: "pointer",
             }}
           >
             {initials}

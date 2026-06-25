@@ -134,3 +134,24 @@ export const STYLE_ICONS = {
   logical: IconTarget,
   assertive: IconShield,
 };
+
+export function IconNotification(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+      <path d="M6 8a6 6 0 1 1 12 0c0 4.5 1.5 6 1.5 6h-15S6 12.5 6 8Z"
+        stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M9.7 18a2.3 2.3 0 0 0 4.6 0"
+        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconProfile(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"
+        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}

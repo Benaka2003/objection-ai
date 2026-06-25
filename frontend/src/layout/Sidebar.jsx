@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
-import { IconBar, IconClock, IconGrid, IconSettings, IconShield } from "../components/Icons.jsx";
+import { IconBar, IconClock, IconGrid, IconNotification, IconProfile, IconSettings, IconShield } from "../components/Icons.jsx";
 import { API_BASE, NAV_ITEMS } from "../utils/constants.js";
 
 const ICONS = {
-  dashboard: IconGrid,
-  analytics: IconBar,
-  history: IconClock,
-  settings: IconSettings,
+  dashboard:     IconGrid,
+  analytics:     IconBar,
+  history:       IconClock,
+  notifications: IconNotification,
+  profile:       IconProfile,
+  settings:      IconSettings,
 };
 
 export function Sidebar({ page, setPage, collapsed }) {
@@ -84,9 +86,9 @@ export function Sidebar({ page, setPage, collapsed }) {
             <span className="mono" style={{ fontSize: 10.5, color: "var(--accent-purple)", letterSpacing: 0.4 }}>
               BACKEND
             </span>
-           <span style={{ fontSize: 11.5, color: "var(--text-faint)" }}>
-  {API_BASE}
-</span>
+            <span style={{ fontSize: 11.5, color: "var(--text-faint)" }}>
+              {API_BASE}
+            </span>
           </>
         ) : (
           <IconShield width={16} height={16} color="var(--accent-purple)" />

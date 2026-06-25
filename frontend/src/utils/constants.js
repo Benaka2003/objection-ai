@@ -3,11 +3,14 @@ export const API_BASE =
   "https://objection-ai-production.up.railway.app";
 
 export const NAV_ITEMS = [
-  { key: "dashboard", label: "Dashboard" },
-  { key: "analytics", label: "Analytics" },
-  { key: "history", label: "History" },
-  { key: "settings", label: "Settings" },
+  { key: "dashboard",     label: "Dashboard" },
+  { key: "analytics",     label: "Analytics" },
+  { key: "history",       label: "History" },
+  { key: "notifications", label: "Notifications" },
+  { key: "profile",       label: "Profile" },
+  { key: "settings",      label: "Settings" },
 ];
+
 export const STYLE_THEME = {
   empathetic: {
     color: "#A78BFA",

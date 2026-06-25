@@ -1,11 +1,33 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { timeAgo } from "../utils/formatters.js";
-import { STYLE_THEME, CATEGORY_COLORS } from "../utils/constants.js";
-import { STYLE_ICONS } from "./Icons.jsx";
+import { CATEGORY_COLORS, STYLE_THEME } from "../utils/constants.js";
+
+function formatDate(dateValue) {
+  try {
+    if (dateValue?.seconds) {
+      return new Date(dateValue.seconds * 1000).toLocaleString("en-GB", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", hour12: true,
+      });
+    }
+    if (dateValue?._seconds) {
+      return new Date(dateValue._seconds * 1000).toLocaleString("en-GB", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", hour12: true,
+      });
+    }
+    return new Date(dateValue).toLocaleString("en-GB", {
+      day: "2-digit", month: "2-digit", year: "numeric",
+      hour: "2-digit", minute: "2-digit", hour12: true,
+    });
+  } catch {
+    return "Unknown date";
+  }
+}
 
 function HistoryDetail({ item, onClose }) {
   if (!item) return null;
+
   return (
     <AnimatePresence>
       <motion.div
@@ -31,28 +53,44 @@ function HistoryDetail({ item, onClose }) {
           exit={{ opacity: 0, y: 10, scale: 0.97 }}
           onClick={(e) => e.stopPropagation()}
           className="glass"
-          style={{ borderRadius: 24, padding: 28, maxWidth: 640, width: "100%", maxHeight: "82vh", overflowY: "auto" }}
+          style={{
+            borderRadius: 24,
+            padding: 28,
+            maxWidth: 700,
+            width: "100%",
+            maxHeight: "82vh",
+            overflowY: "auto",
+          }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: 16,
+            }}
+          >
             <div>
-              <span className="mono" style={{ fontSize: 11, color: "var(--accent-purple)", textTransform: "uppercase" }}>
+              <span
+                className="mono"
+                style={{ fontSize: 11, color: "var(--accent-purple)", textTransform: "uppercase" }}
+              >
                 {item.category || "objection"}
               </span>
-              <p style={{ fontSize: 16, fontWeight: 600, marginTop: 6, lineHeight: 1.4 }}>{item.input || item.objection || "—"}</p>
+              <p style={{ fontSize: 16, fontWeight: 600, marginTop: 6, lineHeight: 1.4 }}>
+                {item.input || item.objection || "—"}
+              </p>
             </div>
             <button
               onClick={onClose}
               style={{
-                width: 30,
-                height: 30,
-                display: "grid",
-                placeItems: "center",
+                width: 32, height: 32,
+                display: "grid", placeItems: "center",
                 background: "rgba(255,255,255,0.04)",
                 border: "1px solid var(--border)",
                 borderRadius: 8,
                 color: "var(--text-secondary)",
                 cursor: "pointer",
-                flexShrink: 0,
               }}
             >
               ✕
@@ -60,11 +98,13 @@ function HistoryDetail({ item, onClose }) {
           </div>
 
           {item.emotionalRoot && (
-            <div style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 18 }}>
               <span className="mono" style={{ fontSize: 10.5, color: "var(--text-faint)", textTransform: "uppercase" }}>
-                Emotional root
+                Emotional Root
               </span>
-              <p style={{ fontSize: 13.5, color: "var(--text-secondary)", marginTop: 4 }}>{item.emotionalRoot}</p>
+              <p style={{ fontSize: 13.5, color: "var(--text-secondary)", marginTop: 4 }}>
+                {item.emotionalRoot}
+              </p>
             </div>
           )}
 
@@ -72,18 +112,25 @@ function HistoryDetail({ item, onClose }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {item.responses.map((r, i) => {
                 const theme = STYLE_THEME[r.style] || STYLE_THEME.logical;
+                const responseText = typeof r.response === "string"
+                  ? r.response
+                  : r.response?.text || r.response?.content || JSON.stringify(r.response);
                 return (
                   <div
                     key={i}
                     style={{
-                      padding: 14,
-                      borderRadius: 12,
+                      padding: 16,
+                      borderRadius: 14,
                       background: theme.bg,
                       border: `1px solid ${theme.color}33`,
                     }}
                   >
-                    <span style={{ fontSize: 12, fontWeight: 700, color: theme.color }}>{theme.label}</span>
-                    <p style={{ fontSize: 13, color: "var(--text)", marginTop: 6, lineHeight: 1.55 }}>{r.response}</p>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: theme.color }}>
+                      {theme.label}
+                    </span>
+                    <p style={{ fontSize: 13.5, color: "var(--text)", marginTop: 8, lineHeight: 1.6 }}>
+                      {responseText}
+                    </p>
                   </div>
                 );
               })}
@@ -113,6 +160,15 @@ export function HistoryPanel({ items }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {items.map((item, i) => {
           const accent = CATEGORY_COLORS[item.category] || "var(--accent-purple)";
+
+          const firstResponse = item.responses?.[0]?.response;
+          const previewText = typeof firstResponse === "string"
+            ? firstResponse
+            : firstResponse?.text || firstResponse?.content || null;
+          const preview = previewText
+            ? `${previewText.substring(0, 80)}${previewText.length > 80 ? "..." : ""}`
+            : "View analysis →";
+
           return (
             <motion.button
               key={item.id || item.objectionId || i}
@@ -125,33 +181,53 @@ export function HistoryPanel({ items }) {
                 textAlign: "left",
                 cursor: "pointer",
                 borderRadius: 16,
-                padding: "15px 17px",
+                padding: "16px 18px",
                 display: "flex",
                 alignItems: "center",
                 gap: 14,
               }}
             >
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: accent, flexShrink: 0 }} />
+              <span
+                style={{
+                  width: 8, height: 8,
+                  borderRadius: "50%",
+                  background: accent,
+                  flexShrink: 0,
+                }}
+              />
+
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p
                   style={{
-                    fontSize: 13.5,
-                    fontWeight: 500,
-                    color: "var(--text)",
-                    margin: 0,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    fontSize: 14, fontWeight: 600, color: "var(--text)",
+                    margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   }}
                 >
                   {item.input || item.objection || "Untitled objection"}
                 </p>
-                <span className="mono" style={{ fontSize: 11, color: "var(--text-faint)", textTransform: "capitalize" }}>
-                  {item.category || "uncategorized"}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 5 }}>
+                  <span className="mono" style={{ fontSize: 11, color: "var(--text-faint)", textTransform: "capitalize" }}>
+                    {item.category || "uncategorized"}
+                  </span>
+                  <span style={{ color: "var(--text-faint)", fontSize: 10 }}>•</span>
+                  <span style={{ color: "var(--text-faint)", fontSize: 10 }}>
+                    {formatDate(item.createdAt || item.timestamp)}
+                  </span>
+                </div>
               </div>
-              <span className="mono" style={{ fontSize: 11.5, color: "var(--text-faint)", flexShrink: 0 }}>
-                {timeAgo(item.timestamp || item.createdAt)}
+
+              <span
+                style={{
+                  color: "var(--text-secondary)",
+                  fontSize: 11,
+                  maxWidth: 240,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {preview}
               </span>
             </motion.button>
           );
